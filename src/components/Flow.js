@@ -8,9 +8,18 @@ import { Router } from "next/router";
 export default function Flow() {
   const router = useRouter();
 
-  const paymentsRef = useRef(null); // Using ref to store the flowComponent instance
+  // const paymentsRef = useRef(null); // Using ref to store the flowComponent instance
   const [loading, setLoading] = useState(true); // State to track loading
   const [error, setError] = useState(null); // State to track errors
+
+  const [language, setLanguage] = useState("en");
+
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem("language");
+    if (storedLanguage) {
+      setLanguage(storedLanguage);
+    }
+  }, []);
 
   async function initializePayment() {
     console.log("initializePayment called✅");
@@ -36,7 +45,7 @@ export default function Flow() {
         const cko = await loadCheckoutWebComponents({
           publicKey: "pk_sbox_ffrilzleqqiso6zphoa6dmpr7eo",
           environment: "sandbox",
-          locale: "de-DE",
+          locale: language,
           paymentSession,
         })
 
@@ -47,10 +56,10 @@ export default function Flow() {
         const flowComponent = cko.create("flow", {
           onReady: () => {
             console.log("onReady");
-            setLoading(false); // Set loading to false when ready
+            setLoading(false);
           },
           onPaymentCompleted: (component, paymentResponse) => {
-            // Handle payment success
+            // Redirect to success page
             router.push("/payment-success");
           },
           // onChange: (component) => {
@@ -61,11 +70,13 @@ export default function Flow() {
           //   );
           // },
           onError: (component, error) => {
-            // Handle payment error
             console.error("Payment error:", error);
             setLoading(false);
-            router.push("/payment-failure");
+
             setError("Payment error occurred");
+
+            // Redirect to failure page
+            router.push("/payment-failure");
           },
         });
 
@@ -81,8 +92,8 @@ export default function Flow() {
         }
 
         console.log("Flow component:", flowComponent);
-        paymentsRef.current = flowComponent;
-        console.log("Ref:", paymentsRef.current);
+        // paymentsRef.current = flowComponent;
+        // console.log("Ref:", paymentsRef.current);
         flowComponent.mount("#payments");
       } catch (sdkError) {
         console.error("Error loading Checkout Web Components SDK:", sdkError);
@@ -101,26 +112,26 @@ export default function Flow() {
 
   useEffect(() => {
 
-    const handleRouteChange = () => {
-      if (paymentsRef.current) {
-        paymentsRef.current.unmount();
-        paymentsRef.current = null;
-      }
-    };
+    // const handleRouteChange = () => {
+    //   if (paymentsRef.current) {
+    //     paymentsRef.current.unmount();
+    //     paymentsRef.current = null;
+    //   }
+    // };
 
-    Router.events.on("routeChangeStart", handleRouteChange);
+    // Router.events.on("routeChangeStart", handleRouteChange);
 
     initializePayment();
 
-    return () => {
-      Router.events.off("routeChangeStart", handleRouteChange);
-      console.log("Before clean up:", paymentsRef.current);
-      if (paymentsRef.current) {
-        console.log("Running cleanup");
-        paymentsRef.current.unmount(); // Access and unmount the flowComponent instance
-        paymentsRef.current = null; // Reset the ref
-      }
-    };
+    // return () => {
+    //   // Router.events.off("routeChangeStart", handleRouteChange);
+    //   console.log("Before clean up:", paymentsRef.current);
+    //   if (paymentsRef.current) {
+    //     console.log("Running cleanup");
+    //     paymentsRef.current.unmount(); // Access and unmount the flowComponent instance
+    //     paymentsRef.current = null; // Reset the ref
+    //   }
+    // };
   }, [router]);
 
   return (

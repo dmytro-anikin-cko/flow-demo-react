@@ -12,17 +12,18 @@ export async function POST(request, response) {
 
     let paymentRequest = {
       processing_channel_id: process.env.PROCESSING_CHANNEL_ID,
-      currency: "EUR",
-      amount: 1998,
+      currency: "EUR", // Necessary for iDeal and Sofort
+      amount: generateRandomAmount(),
       reference: `ORD-${generateRandomAmount()}`,
       customer: {
         name: "Test Name",
       },
       billing: {
         address: {
-          country: "DE",
+          country: "NL", // Necessary for iDeal
         },
       },
+      // locale: "en",
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,
       failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-failure`,
     };

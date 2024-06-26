@@ -4,7 +4,7 @@ export default function PaymentSuccess(){
     return (
         <div>
             <p>Payment Success!🎉</p>
-            <Link href={"/"}>Home</Link>
+            <Link className="link link-primary" href={"/"}>Home</Link>
         </div>
     )
 }

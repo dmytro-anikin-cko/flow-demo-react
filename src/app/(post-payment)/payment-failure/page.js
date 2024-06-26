@@ -4,7 +4,7 @@ export default function PaymentFailure(){
     return (
         <div>
             <p>Payment Failure!❌</p>
-            <Link href={"/"}>Home</Link>
+            <Link className="link link-primary" href={"/"}>Home</Link>
         </div>
     )
 }
