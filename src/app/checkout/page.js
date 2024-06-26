@@ -32,6 +32,13 @@ export default function Checkout(){
             <div>
                 <Locale language={language} onLanguageChange={handleLanguageChange} />
             </div>
+            <div className='bg-slate-200 rounded-xl p-8 mb-4'>
+              <div className='italic'>
+                <p>
+                  Use one of the following <a className="text-blue-500 underline" target="_blank" rel="noopener noreferrer" href="https://www.checkout.com/docs/developer-resources/testing/test-cards">test cards</a>.
+                </p>
+              </div>
+            </div>
             <div>
                 <Flow language={language} />
             </div>

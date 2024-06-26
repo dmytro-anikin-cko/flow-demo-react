@@ -6,21 +6,34 @@ const generateRandomAmount = () => {
 
 export async function POST(request, response) {
   try {
-    // const body = await request.json();
-    // console.log("Log body", body);
-    // const { amount, name } = body; // Get the token from the request body
+    const body = await request.json();
+    console.log("Log body", body);
+    let { language } = body; // Get the token from the request body
+
+    const transformLanguageCode = (lang) => {
+      if (lang === 'en') {
+        return 'GB';
+      } else if (lang === 'nl' || lang === 'fr') {
+        return lang.toUpperCase();
+      } else {
+        return lang;
+      }
+    };
+
+    const transformedLanguage = transformLanguageCode(language);
+
 
     let paymentRequest = {
       processing_channel_id: process.env.PROCESSING_CHANNEL_ID,
       currency: "EUR", // Necessary for iDeal and Sofort
       amount: generateRandomAmount(),
       reference: `ORD-${generateRandomAmount()}`,
-      customer: {
-        name: "Test Name",
-      },
+      // customer: {
+      //   name: "Test Name",
+      // },
       billing: {
         address: {
-          country: "NL", // Necessary for iDeal
+          country: transformedLanguage, // Necessary for iDeal
         },
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,

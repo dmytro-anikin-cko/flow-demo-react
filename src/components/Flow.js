@@ -12,12 +12,23 @@ export default function Flow({ language }) {
   const [loading, setLoading] = useState(true); // State to track loading
   const [error, setError] = useState(null); // State to track errors
 
+  async function completeOrder(paymentId){
+    // Redirect to success page
+    router.push(`/payment-success?cko-payment-id=${paymentId}`);
+  }
+
   async function initializePayment() {
     console.log("initializePayment called✅");
 
     try {
       const orderResponse = await fetch("/api/payment-session", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          language
+        }),
       });
       const paymentSession = await orderResponse.json();
   
@@ -28,8 +39,6 @@ export default function Flow({ language }) {
       } else {
         console.log("paymentSession:", paymentSession);
       }
-      
-      console.log("Before loadCheckoutWebComponents", language);
 
       try {
         // Usage: README file https://www.npmjs.com/package/checkout-web-components?activeTab=code
@@ -40,19 +49,15 @@ export default function Flow({ language }) {
           appearance,
           paymentSession,
         })
-
-        console.log("CKO:", cko);
-
   
         // Create and mount the payments component
         const flowComponent = cko.create("flow", {
           onReady: (component) => {
-            console.log("onReady", component);
+            console.log("Component Ready");
             setLoading(false);
           },
-          onPaymentCompleted: (component, paymentResponse) => {
-            // Redirect to success page
-            router.push("/payment-success");
+          onPaymentCompleted: async (component, paymentResponse) => {
+            await completeOrder(paymentResponse.id)
           },
           onError: (component, error) => {
             console.error("Payment error:", error);
@@ -93,6 +98,8 @@ export default function Flow({ language }) {
 
   useEffect(() => {
 
+    // Before calling loadCheckoutWebComponents, the script element for https://checkout-web-components.checkout.com/index.js is removed if it already exists in the document. 
+    // This ensures that the loader script will re-load properly and the promise resolves as expected.
     const existingScript = document.querySelector(`script[src="https://checkout-web-components.checkout.com/index.js"]`);
     if (existingScript) { existingScript.remove() }
 
