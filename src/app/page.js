@@ -18,21 +18,21 @@ export default function Home() {
         <div className="form-control">
           <label className="label cursor-pointer">
             <span className="label-text">English</span>
-            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" defaultChecked checked={language === "en"}
+            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" value='en' defaultChecked checked={language === "en"}
               onChange={handleLanguageChange} />
           </label>
         </div>
         <div className="form-control">
           <label className="label cursor-pointer">
             <span className="label-text">French</span>
-            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" defaultChecked checked={language === "fr"}
+            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" value='fr' defaultChecked checked={language === "fr"}
               onChange={handleLanguageChange} />
           </label>
         </div>
         <div className="form-control">
           <label className="label cursor-pointer">
             <span className="label-text">Dutch</span>
-            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" defaultChecked checked={language === "nl"}
+            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" value='nl' defaultChecked checked={language === "nl"}
               onChange={handleLanguageChange} />
           </label>
         </div>

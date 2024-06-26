@@ -4,6 +4,7 @@ import { loadCheckoutWebComponents } from "@checkout.com/checkout-web-components
 import { useRouter } from "next/navigation";
 import Loader from "@/UI/Loader";
 import { Router } from "next/router";
+import { appearance } from "@/constants/constants";
 
 export default function Flow() {
   const router = useRouter();
@@ -12,15 +13,18 @@ export default function Flow() {
   const [loading, setLoading] = useState(true); // State to track loading
   const [error, setError] = useState(null); // State to track errors
 
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState(null);
+  const [languageLoaded, setLanguageLoaded] = useState(false); // State to track if language is loaded
 
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language");
     if (storedLanguage) {
       setLanguage(storedLanguage);
+    } else {
+      setLanguage("en"); // Default to English if no language is set
     }
+    setLanguageLoaded(true); // Mark language as loaded
   }, []);
-
   async function initializePayment() {
     console.log("initializePayment called✅");
 
@@ -38,7 +42,7 @@ export default function Flow() {
         console.log("paymentSession:", paymentSession);
       }
       
-      console.log("Before loadCheckoutWebComponents");
+      console.log("Before loadCheckoutWebComponents", language);
 
       try {
         // Usage: README file https://www.npmjs.com/package/checkout-web-components?activeTab=code
@@ -46,6 +50,7 @@ export default function Flow() {
           publicKey: "pk_sbox_ffrilzleqqiso6zphoa6dmpr7eo",
           environment: "sandbox",
           locale: language,
+          appearance,
           paymentSession,
         })
 
@@ -121,7 +126,9 @@ export default function Flow() {
 
     // Router.events.on("routeChangeStart", handleRouteChange);
 
-    initializePayment();
+    if (languageLoaded) {
+      initializePayment();
+    }
 
     // return () => {
     //   // Router.events.off("routeChangeStart", handleRouteChange);
@@ -132,7 +139,7 @@ export default function Flow() {
     //     paymentsRef.current = null; // Reset the ref
     //   }
     // };
-  }, [router]);
+  }, [languageLoaded, router]);
 
   return (
     <div>
