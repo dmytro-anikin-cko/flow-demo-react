@@ -23,7 +23,6 @@ export async function POST(request, response) {
           country: "NL", // Necessary for iDeal
         },
       },
-      // locale: "en",
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,
       failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-failure`,
     };
