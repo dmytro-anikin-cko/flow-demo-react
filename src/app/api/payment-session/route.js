@@ -31,6 +31,9 @@ export async function POST(request, response) {
       // customer: {
       //   name: "Test Name",
       // },
+      "3ds": {
+        enabled: true, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
+      },
       billing: {
         address: {
           country: transformedLanguage, // Necessary for iDeal

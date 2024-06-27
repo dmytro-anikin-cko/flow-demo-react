@@ -27,7 +27,9 @@ function PaymentSuccessComponent() {
     if (!response.ok) {
       throw new Error('Failed to fetch payment details');
     }
-    return response.json();
+    const paymentData = await response.json();
+    console.log(paymentData);
+    return paymentData;
   }
 
   useEffect(() => {

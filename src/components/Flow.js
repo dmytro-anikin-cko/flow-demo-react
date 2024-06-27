@@ -43,7 +43,7 @@ export default function Flow({ language }) {
       try {
         // Usage: README file https://www.npmjs.com/package/checkout-web-components?activeTab=code
         const cko = await loadCheckoutWebComponents({
-          publicKey: "pk_sbox_ffrilzleqqiso6zphoa6dmpr7eo",
+          publicKey: "pk_sbox_guri7tp655hvceb3qaglozm7gee",
           environment: "sandbox",
           locale: language,
           appearance,
