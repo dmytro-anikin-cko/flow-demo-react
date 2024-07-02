@@ -97,11 +97,13 @@ export default function Flow({ language }) {
   }
 
   useEffect(() => {
+    // UPD: not necessary anymore. Solved in 0.6.0-beta (previous 0.5.0-beta)
 
-    // Before calling loadCheckoutWebComponents, the script element for https://checkout-web-components.checkout.com/index.js is removed if it already exists in the document. 
-    // This ensures that the loader script will re-load properly and the promise resolves as expected.
-    const existingScript = document.querySelector(`script[src="https://checkout-web-components.checkout.com/index.js"]`);
-    if (existingScript) { existingScript.remove() }
+    /* Before calling loadCheckoutWebComponents, the script element for https://checkout-web-components.checkout.com/index.js is removed if it already exists in the document. 
+      This ensures that the loader script will re-load properly and the promise resolves as expected.
+      const existingScript = document.querySelector(`script[src="https://checkout-web-components.checkout.com/index.js"]`);
+      if (existingScript) { existingScript.remove() }
+    */
 
     initializePayment();
 
