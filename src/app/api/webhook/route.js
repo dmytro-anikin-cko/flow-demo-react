@@ -11,6 +11,10 @@ export async function POST(req, res) {
 
     const secret = process.env.WEBHOOK_SIGNATURE_KEY; // Your secret key from Checkout.com
 
+    console.log("secret:", process.env.WEBHOOK_SIGNATURE_KEY);
+    console.log("secret:", secret);
+    
+
     const hash = crypto
       .createHmac("sha256", secret)
       .update(rawBody, "utf8")
