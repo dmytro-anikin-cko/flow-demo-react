@@ -30,9 +30,9 @@ export async function POST(request, response) {
       currency: "EUR", // Necessary for iDeal and Sofort
       amount: 1000,
       reference: `ORD-${generateRandomAmount()}`,
-      // customer: {
-      //   name: "Test Name",
-      // },
+      customer: { // Necessary for Klarna
+        name: "Test Name",
+      },
       "3ds": {
         enabled: true, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
       },
@@ -43,11 +43,11 @@ export async function POST(request, response) {
       },
       items: [ // Necessary for Klarna
         {
-          "name": "Battery Power Pack",
-          "quantity": 1,
-          "unit_price": 1000,
-          "total_amount": 1000,
-          "reference": "BA67A"
+          name: "Battery Power Pack",
+          quantity: 1,
+          unit_price: 1000,
+          total_amount: 1000,
+          reference: "BA67A"
         }
       ],
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,
