@@ -5,9 +5,11 @@ const generateRandomAmount = () => {
 };
 
 export async function POST(request, response) {
+
   try {
     const body = await request.json();
-    console.log("Log body", body);
+    // console.log("Log body", body);
+    
     let { language } = body; // Get the token from the request body
 
     const transformLanguageCode = (lang) => {
@@ -26,7 +28,7 @@ export async function POST(request, response) {
     let paymentRequest = {
       processing_channel_id: process.env.PROCESSING_CHANNEL_ID,
       currency: "EUR", // Necessary for iDeal and Sofort
-      amount: generateRandomAmount(),
+      amount: 1000,
       reference: `ORD-${generateRandomAmount()}`,
       // customer: {
       //   name: "Test Name",
@@ -39,9 +41,18 @@ export async function POST(request, response) {
           country: transformedLanguage, // Necessary for iDeal
         },
       },
+      items: [ // Necessary for Klarna
+        {
+          "name": "Battery Power Pack",
+          "quantity": 1,
+          "unit_price": 1000,
+          "total_amount": 1000,
+          "reference": "BA67A"
+        }
+      ],
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,
       failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-failure`,
-    };
+    };    
 
     const paymentSessionResponse = await fetch(
       "https://api.sandbox.checkout.com/payment-sessions",
@@ -57,7 +68,7 @@ export async function POST(request, response) {
 
     const paymentSessionData = await paymentSessionResponse.json();
 
-    console.log("paymentSessionData", paymentSessionData);
+    // console.log("paymentSessionData", paymentSessionData);
 
     return NextResponse.json(paymentSessionData);
   } catch (error) {
