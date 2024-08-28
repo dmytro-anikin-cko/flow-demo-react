@@ -24,14 +24,19 @@ export async function POST(request, response) {
 
     const transformedLanguage = transformLanguageCode(language);
 
-
+    // Sample data for Klarna: https://docs.klarna.com/resources/developer-tools/sample-data/sample-customer-data/#europe-netherlands
     let paymentRequest = {
       processing_channel_id: process.env.PROCESSING_CHANNEL_ID,
       currency: "EUR", // Necessary for iDeal and Sofort
       amount: 1000,
       reference: `ORD-${generateRandomAmount()}`,
       customer: { // Necessary for Klarna
-        name: "Test Name",
+        name: "Random Name", // Can be random for Klarna
+        email: "random@email.com", // NECESSARY!!!! Can be random for Klarna
+        // phone: { // Not necessary
+        //   country_code: "+34", // Can be random for Klarna
+        //   number: "689689689" // Can be random for Klarna
+        // }
       },
       "3ds": {
         enabled: true, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
@@ -39,6 +44,10 @@ export async function POST(request, response) {
       billing: {
         address: {
           country: transformedLanguage, // Necessary for iDeal
+          address_line1: "Osdorpplein 137", // NECESSARY!!!! Can be random for Klarna
+          // address_line2: "Flat 456", // Not necessary. Can be random for Klarna
+          city: "Amsterdam", // NECESSARY!!!! Can be random for Klarna
+          zip: "1068 SR", // NECESSARY!!!! Can be random for Klarna
         },
       },
       items: [ // Necessary for Klarna
