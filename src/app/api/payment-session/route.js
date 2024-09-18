@@ -59,8 +59,8 @@ export async function POST(request, response) {
           reference: "BA67A"
         }
       ],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success`,
-      failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-failure`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-success-redirect`,
+      failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-failure-redirect`,
     };    
 
     const paymentSessionResponse = await fetch(

@@ -6,13 +6,18 @@ import Loader from '@/UI/Loader';
 import Link from 'next/link';
 
 function PaymentSuccessComponent() {
-  const searchParams = useSearchParams();
-  const paymentId = searchParams.get('cko-payment-id');
   const [paymentDetails, setPaymentDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log(paymentId);
+  const searchParams = useSearchParams();
+  const paymentId = searchParams.get('cko-payment-id');
+  const paymentSessionId = searchParams.get('cko-payment-session-id');
+  const sessionId = searchParams.get('cko-session-id');
+  
+  console.log("paymentId:", paymentId);
+  console.log("paymentSessionId:", paymentSessionId);
+  console.log("sessionId:", sessionId);
 
   async function fetchPaymentDetails(paymentId) {
     const response = await fetch(`/api/getPaymentDetails`, {
@@ -21,7 +26,7 @@ function PaymentSuccessComponent() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        paymentId
+        paymentId, sessionId
       }),
     });
     if (!response.ok) {
@@ -39,7 +44,7 @@ function PaymentSuccessComponent() {
         .catch((error) => setError(error.message))
         .finally(() => setLoading(false));
     } else {
-      setError('Session ID not provided');
+      setError('Payment ID not provided');
       setLoading(false);
     }
   }, [paymentId]);
