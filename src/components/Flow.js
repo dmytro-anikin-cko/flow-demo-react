@@ -47,7 +47,7 @@ export default function Flow({ language }) {
           environment: "sandbox",
           locale: language,
           appearance,
-          paymentSession,
+          paymentSession
         })
   
         // Create and mount the payments component
@@ -56,11 +56,11 @@ export default function Flow({ language }) {
             console.log("Component Ready");
             setLoading(false);
           },
-          onPaymentCompleted: async (component, paymentResponse) => {
+          onPaymentCompleted: async (component, paymentResponse) => {            
             await completeOrder(paymentResponse.id)
           },
-          onError: (component, error) => {
-            console.error("Payment error:", error);
+          onError: (component, error) => {            
+            console.error("Payment error:", `${JSON.stringify(error)}`);
             setLoading(false);
             setError("Payment error occurred");
 

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Checkout } from "checkout-sdk-node";
 
 const generateRandomAmount = () => {
   return Math.floor(1000 + Math.random() * 9000); // Generates a number between 1000 and 9999
@@ -7,8 +8,8 @@ const generateRandomAmount = () => {
 export async function POST(request, response) {
 
   try {
+    const cko = new Checkout(process.env.SECRET_KEY);
     const body = await request.json();
-    // console.log("Log body", body);
     
     let { language } = body; // Get the token from the request body
 
@@ -38,9 +39,9 @@ export async function POST(request, response) {
         //   number: "689689689" // Can be random for Klarna
         // }
       },
-      "3ds": {
-        enabled: true, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
-      },
+      // "3ds": {
+      //   enabled: false, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
+      // },
       billing: {
         address: {
           country: transformedLanguage, // Necessary for iDeal
@@ -48,6 +49,17 @@ export async function POST(request, response) {
           // address_line2: "Flat 456", // Not necessary. Can be random for Klarna
           city: "Amsterdam", // NECESSARY!!!! Can be random for Klarna
           zip: "1068 SR", // NECESSARY!!!! Can be random for Klarna
+        },
+      },
+      payment_method_configuration: {
+        card: {
+          store_payment_details: "enabled"
+        },
+        applepay: {
+          store_payment_details: "enabled"
+        },
+        googlepay: {
+          store_payment_details: "enabled"
         },
       },
       items: [ // Necessary for Klarna
@@ -63,23 +75,25 @@ export async function POST(request, response) {
       failure_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment-failure-redirect`,
     };    
 
-    const paymentSessionResponse = await fetch(
-      "https://api.sandbox.checkout.com/payment-sessions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.SECRET_KEY}`,
-        },
-        body: JSON.stringify(paymentRequest),
-      }
-    );
+    // const paymentSessionResponse = await fetch(
+    //   "https://api.sandbox.checkout.com/payment-sessions",
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${process.env.SECRET_KEY}`,
+    //     },
+    //     body: JSON.stringify(paymentRequest),
+    //   }
+    // );
+    // const paymentSessionData = await paymentSessionResponse.json();
 
-    const paymentSessionData = await paymentSessionResponse.json();
 
-    // console.log("paymentSessionData", paymentSessionData);
+    // Using the CKO NODE SDK to make the Payment Sessions call: 
+    const paymentResponse = await cko.paymentSessions.request(paymentRequest)
+    console.log(paymentResponse);
 
-    return NextResponse.json(paymentSessionData);
+    return NextResponse.json(paymentResponse);
   } catch (error) {
     console.log("Error on the server:", error);
     return NextResponse.json({ error: error.body }, { status: 500 });
