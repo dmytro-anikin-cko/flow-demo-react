@@ -29,7 +29,7 @@ export async function POST(request, response) {
     let paymentRequest = {
       processing_channel_id: process.env.PROCESSING_CHANNEL_ID,
       currency: "EUR", // Necessary for iDeal and Sofort
-      amount: 100,
+      amount: 1000,
       reference: `ORD-${generateRandomAmount()}`,
       customer: { // Necessary for Klarna
         name: "Random Name", // Can be random for Klarna
