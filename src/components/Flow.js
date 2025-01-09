@@ -59,7 +59,7 @@ export default function Flow({ language }) {
           onPaymentCompleted: async (component, paymentResponse) => {            
             await completeOrder(paymentResponse.id)
           },
-          onError: (component, error) => {            
+          onError: async (component, error) => {            
             console.error("Payment error:", `${JSON.stringify(error)}`);
             setLoading(false);
             setError("Payment error occurred");
