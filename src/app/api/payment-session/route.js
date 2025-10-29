@@ -7,6 +7,9 @@ const generateRandomAmount = () => {
 
 export async function POST(request, response) {
 
+  console.log(process.env.NEXT_PUBLIC_BASE_URL);
+  
+
   try {
     const cko = new Checkout(process.env.SECRET_KEY);
     const body = await request.json();
@@ -39,16 +42,19 @@ export async function POST(request, response) {
         //   number: "689689689" // Can be random for Klarna
         // }
       },
-      // "3ds": {
-      //   enabled: false, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
-      // },
+      "3ds": {
+        enabled: true, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
+      },
+      processing: {
+        pan_preference: "fpan"
+      },
       billing: {
         address: {
-          country: transformedLanguage, // Necessary for iDeal
-          address_line1: "Osdorpplein 137", // NECESSARY!!!! Can be random for Klarna
+          country: transformedLanguage, // Necessary for iDeal & SEPA
+          address_line1: "Osdorpplein 137", // NECESSARY for SEPA!!!! Can be random for Klarna
           // address_line2: "Flat 456", // Not necessary. Can be random for Klarna
-          city: "Amsterdam", // NECESSARY!!!! Can be random for Klarna
-          zip: "1068 SR", // NECESSARY!!!! Can be random for Klarna
+          city: "Amsterdam", // NECESSARY for SEPA!!!! Can be random for Klarna
+          zip: "1068 SR", // NECESSARY for SEPA!!!! Can be random for Klarna
         },
       },
       payment_method_configuration: {
