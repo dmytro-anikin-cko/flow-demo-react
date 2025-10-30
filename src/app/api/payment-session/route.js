@@ -43,10 +43,11 @@ export async function POST(request, response) {
         // }
       },
       "3ds": {
-        enabled: true, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
+        enabled: false, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
       },
       processing: {
-        pan_preference: "fpan"
+        pan_preference: "fpan",
+        provision_network_token: false
       },
       billing: {
         address: {
