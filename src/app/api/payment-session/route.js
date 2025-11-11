@@ -45,10 +45,10 @@ export async function POST(request, response) {
       "3ds": {
         enabled: false, // For Cartes Bancaires, doesn't work with 'true' (works only when providing 'eci', 'cryptogram', etc.). Error code: 'no_processor_configured_for_card_scheme'. 
       },
-      processing: {
-        pan_preference: "fpan",
-        provision_network_token: false
-      },
+      // processing: {
+      //   pan_preference: "fpan",
+      //   provision_network_token: false
+      // },
       billing: {
         address: {
           country: transformedLanguage, // Necessary for iDeal & SEPA

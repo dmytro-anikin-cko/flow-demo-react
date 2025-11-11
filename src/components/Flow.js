@@ -12,7 +12,7 @@ export default function Flow({ language }) {
   const [loading, setLoading] = useState(true); // State to track loading
   const [error, setError] = useState(null); // State to track errors
 
-  async function completeOrder(paymentId){
+  async function completeOrder(paymentId) {
     // Redirect to success page
     router.push(`/payment-success?cko-payment-id=${paymentId}`);
   }
@@ -27,11 +27,11 @@ export default function Flow({ language }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          language
+          language,
         }),
       });
       const paymentSession = await orderResponse.json();
-  
+
       if (!orderResponse.ok) {
         console.error("Error creating payment session", paymentSession);
         setLoading(false);
@@ -47,19 +47,37 @@ export default function Flow({ language }) {
           environment: "sandbox",
           locale: language,
           appearance,
-          paymentSession
-        })
-  
+          paymentSession,
+        });
+
         // Create and mount the payments component
         const flowComponent = cko.create("flow", {
           onReady: (component) => {
             console.log("Component Ready");
             setLoading(false);
           },
-          onPaymentCompleted: async (component, paymentResponse) => {            
-            await completeOrder(paymentResponse.id)
+          onAuthorized: (_self, authorizeResult) => {
+            // For wallets
+            console.log("onAuthorized Method:", authorizeResult);
+
+            // Reject credit cards
+            // Incorrect path stated in the docs: authorizeResult?.payment?.token?.paymentMethod?.type
+            // if (
+            //   authorizeResult?.paymentMethodData?.info?.cardFundingSource ===
+            //   "CREDIT"
+            // ) {
+            //   return {
+            //     continue: false,
+            //     errorMessage: "Credit cards are not accepted.",
+            //   };
+            // }
+
+            return { continue: true };
           },
-          onError: async (component, error) => {            
+          onPaymentCompleted: async (component, paymentResponse) => {
+            await completeOrder(paymentResponse.id);
+          },
+          onError: async (component, error) => {
             console.error("Payment error:", `${JSON.stringify(error)}`);
             setLoading(false);
             setError("Payment error occurred");
@@ -70,7 +88,7 @@ export default function Flow({ language }) {
         });
 
         // Check if FlowComponent can be rendered
-        const isAvailable = await flowComponent.isAvailable(); 
+        const isAvailable = await flowComponent.isAvailable();
         if (!isAvailable) {
           console.error("FlowComponent is not available");
           setLoading(false);
@@ -88,7 +106,6 @@ export default function Flow({ language }) {
         setLoading(false);
         setError("Error loading Checkout Web Components SDK");
       }
-
     } catch (error) {
       console.error("Error initializing payment:", error);
       setLoading(false);
@@ -108,7 +125,6 @@ export default function Flow({ language }) {
     initializePayment();
 
     return () => {
-
       if (paymentsRef.current) {
         console.log("Unmounting FlowComponent");
         paymentsRef.current.unmount();
